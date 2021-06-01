@@ -3,23 +3,22 @@ package org.dragos.controller;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.util.Duration;
 
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.time.LocalTime;
-import java.util.Random;
+import java.util.Locale;
 import java.util.ResourceBundle;
-
+import java.util.Scanner;
 
 public class PrimaryController implements Initializable {
 
+    private static final String INPUT_FILE = "fisier.txt";
     @FXML
     public Label time;
     @FXML
@@ -44,13 +43,14 @@ public class PrimaryController implements Initializable {
 
     void initClock() {
 
-        Random randomInInterval = new Random();
         clock = new Timeline(new KeyFrame(Duration.ZERO, e -> {
             LocalTime currentTime = LocalTime.now();
             time.setText(currentTime.getHour() + ":" + currentTime.getMinute() + ":" + currentTime.getSecond());
-            try {
-                myWriter.write("asd");    //aici o sa iau date din fisier cu temperatura in care rulez un script
-                temperature.setText(String.valueOf(randomInInterval.nextInt(50 - 40) + 40));  //aici o sa setez text ce vine din fisier
+            try (Scanner s = new Scanner(new BufferedReader(new FileReader(INPUT_FILE)))) {
+                s.useLocale(Locale.US);
+                int n = Integer.parseInt(s.next());
+                System.out.println(n); //used for validation
+                temperature.setText(String.valueOf(n));
             } catch (IOException ioException) {
                 ioException.printStackTrace();
             }
@@ -59,7 +59,6 @@ public class PrimaryController implements Initializable {
         );
         clock.setCycleCount(Animation.INDEFINITE);
         clock.play();
-
     }
 
     void initHoverState() {
@@ -67,7 +66,7 @@ public class PrimaryController implements Initializable {
         stopButton.setOnMouseExited(event -> stopButton.setStyle("-fx-background-color:coral;"));
     }
 
-    public void stopUi(ActionEvent actionEvent) {
+    public void stopUi() {
         try {
             myWriter.close();
         } catch (IOException e) {
