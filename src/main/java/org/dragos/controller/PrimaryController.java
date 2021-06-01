@@ -44,13 +44,13 @@ public class PrimaryController implements Initializable {
 
     void initClock() {
 
-        Random r = new Random();
+        Random randomInInterval = new Random();
         clock = new Timeline(new KeyFrame(Duration.ZERO, e -> {
             LocalTime currentTime = LocalTime.now();
             time.setText(currentTime.getHour() + ":" + currentTime.getMinute() + ":" + currentTime.getSecond());
             try {
                 myWriter.write("asd");    //aici o sa iau date din fisier cu temperatura in care rulez un script
-                temperature.setText(String.valueOf(r.nextInt(50 - 40) + 40));  //aici o sa setez text ce vine din fisier
+                temperature.setText(String.valueOf(randomInInterval.nextInt(50 - 40) + 40));  //aici o sa setez text ce vine din fisier
             } catch (IOException ioException) {
                 ioException.printStackTrace();
             }
